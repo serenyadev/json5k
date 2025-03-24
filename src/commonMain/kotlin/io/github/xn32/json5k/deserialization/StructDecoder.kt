@@ -12,9 +12,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(ExperimentalSerializationApi::class)
-internal sealed class StructDecoder(protected val parent: MainDecoder, opener: Token.BeginToken) : CompositeDecoder {
+internal sealed class StructDecoder(internal val parent: MainDecoder, opener: Token.BeginToken) : CompositeDecoder {
     override val serializersModule: SerializersModule = parent.serializersModule
-    protected val parser: InjectableLookaheadParser<Token> = parent.parser
+    internal val parser: InjectableLookaheadParser<Token> = parent.parser
     protected val structOpenerEvent: Event<Token>
 
     init {

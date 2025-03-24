@@ -1,8 +1,8 @@
 package io.github.xn32.json5k.binding
 
-import io.github.xn32.json5k.Json5
-import io.github.xn32.json5k.SerialComment
+import io.github.xn32.json5k.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -324,5 +324,49 @@ class SerializationTest {
         }
 
         assertEquals("\"0xff0000\"", json5.encodeToString(Color(0xff0000)))
+    }
+
+    @Test
+    fun json5Element() {
+        val json5 = MutableJson5Object()
+        json5["meow"] = Json5Primitive(1)
+        json5["mrrrp"] = Json5Primitive(true)
+        json5["nyaa"] = Json5Primitive("mrrp")
+        json5.putComment("meow", "A dumbass comment")
+
+        val obj = MutableJson5Object()
+        obj["mrrraww"] = Json5Primitive(true)
+        obj["arf"] = Json5Primitive(false)
+        json5["obj"] = obj
+
+        val arr = MutableJson5Array()
+        arr.add(Json5Primitive(1))
+        arr.add(Json5Primitive(2))
+        arr.add(Json5Primitive(3))
+        json5["arr"] = arr
+
+        println(Json5 { prettyPrint = true }.encodeToString<Json5Object>(json5))
+
+        val jsonString = """
+            {
+                // A dumbass comment
+                meow: 1,
+                mrrrp: true,
+                nyaa: "mrrp",
+                obj: {
+                    mrrraww: true,
+                    arf: false
+                },
+                arr: [
+                    1,
+                    2,
+                    3
+                ]
+            }
+        """.trimIndent()
+
+        val json52 = Json5.decodeFromString<Json5Object>(jsonString)
+        println(json52)
+        //assertEquals(json5.toImmutable(), json52)
     }
 }

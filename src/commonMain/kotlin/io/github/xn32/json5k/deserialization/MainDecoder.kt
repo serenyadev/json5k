@@ -165,8 +165,8 @@ private object UnsignedLimits {
     val LONG = ULong.MAX_VALUE
 }
 
-private fun Token.Num.isHexNumber() = rep.startsWith("0x") || rep.startsWith("-0x")
-private fun Token.Num.removeHexPrefix() = rep.replaceFirst("0x", "")
+internal fun Token.Num.isHexNumber() = rep.startsWith("0x") || rep.startsWith("-0x")
+internal fun Token.Num.removeHexPrefix() = rep.replaceFirst("0x", "")
 
 private fun Parser<Token>.getInteger(limits: LongRange): Long {
     val (pos, token) = next().mapType<Token.Num>()

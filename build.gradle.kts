@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.xn32"
-version = "0.4.0-SNAPSHOT"
+version = "0.5.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -96,17 +96,18 @@ publishing {
     }
 
     repositories {
-        maven {
-            url = if (isReleaseVersion) {
-                uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            } else {
-                uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        val username = "sapphoCompanyUsername".let { System.getenv(it) ?: findProperty(it) }?.toString()
+        val password = "sapphoCompanyPassword".let { System.getenv(it) ?: findProperty(it) }?.toString()
+        if (username != null && password != null) {
+            maven("https://maven.is-immensely.gay/${properties["maven_category"]}") {
+                name = "sapphoCompany"
+                credentials {
+                    this.username = username
+                    this.password = password
+                }
             }
-
-            credentials {
-                username = sonatypeUsername ?: ""
-                password = sonatypePassword ?: ""
-            }
+        } else {
+            println("Sappho Company credentials not present.")
         }
     }
 }
