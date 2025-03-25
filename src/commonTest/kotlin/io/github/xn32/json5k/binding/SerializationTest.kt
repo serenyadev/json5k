@@ -1,6 +1,7 @@
 package io.github.xn32.json5k.binding
 
 import io.github.xn32.json5k.*
+import io.github.xn32.json5k.format.Token
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -369,4 +370,34 @@ class SerializationTest {
         println(json52)
         //assertEquals(json5.toImmutable(), json52)
     }
+
+    @Test
+    fun encodeJson5Element() {
+        val json5 = Json5 {
+            prettyPrint = true
+        }
+        val meow = Meow("mrraw", false)
+
+        val element = json5.encodeToJson5Element(meow)
+
+        println(json5.encodeToString(element))
+
+        val arf = Json5.encodeToJson5Element(Arf(meow, "arfies"))
+        println(json5.encodeToString(arf))
+
+        val meow2 = Json5.decodeFromJson5Element<Meow>(element)
+        println(meow2)
+
+    }
 }
+
+
+@Serializable
+data class Meow(
+    @SerialComment("First comment")
+    val meow: String,
+    val arf: Boolean
+)
+
+@Serializable
+data class Arf(val meow: Meow, val arfies: String)

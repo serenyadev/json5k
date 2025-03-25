@@ -99,7 +99,7 @@ publishing {
         val username = "sapphoCompanyUsername".let { System.getenv(it) ?: findProperty(it) }?.toString()
         val password = "sapphoCompanyPassword".let { System.getenv(it) ?: findProperty(it) }?.toString()
         if (username != null && password != null) {
-            maven("https://maven.is-immensely.gay/${properties["maven_category"]}") {
+            maven("https://maven.is-immensely.gay/${if(isReleaseVersion) "releases" else "nightly"}") {
                 name = "sapphoCompany"
                 credentials {
                     this.username = username

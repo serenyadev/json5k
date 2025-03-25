@@ -75,3 +75,4 @@ internal object ColorAsStringSerializer : KSerializer<Color> {
         return Color(string.removePrefix("0x").toInt(16))
     }
 }
+

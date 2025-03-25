@@ -1,9 +1,33 @@
+@file:OptIn(ExperimentalContracts::class)
 package io.github.xn32.json5k
 
 import kotlinx.serialization.Serializable
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 @Serializable(with = Json5ElementSerializer::class)
 sealed interface Json5Element
+
+fun Json5Element.asPrimitive(): Json5Primitive {
+    contract {
+        returns() implies (this@asPrimitive is Json5Primitive)
+    }
+    return this as? Json5Primitive ?: error("$this is not a Json5Primitive")
+}
+
+fun Json5Element.asObject(): Json5Object {
+    contract {
+        returns() implies (this@asObject is Json5Object)
+    }
+    return this as? Json5Object ?: error("$this is not a Json5Object")
+}
+
+fun Json5Element.asArray(): Json5Array {
+    contract {
+        returns() implies (this@asArray is Json5Array)
+    }
+    return this as? Json5Array ?: error("$this is not a Json5Array")
+}
 
 @Serializable(with = Json5PrimitiveSerializer::class)
 sealed class Json5Primitive : Json5Element {
@@ -83,6 +107,12 @@ val Json5Primitive.isString: Boolean
 
 val Json5Primitive.stringOrNull: String?
     get() = if(isString) content else null
+
+val Json5Primitive.charOrNull: Char?
+    get() = if(isString && content.length == 1) content[0] else null
+
+val Json5Primitive.char: Char
+    get() = charOrNull ?: error("element is not a char")
 
 internal class Json5Literal(override val content: String, override val type: Type) : Json5Primitive()
 

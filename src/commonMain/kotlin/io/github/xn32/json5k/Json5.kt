@@ -1,5 +1,6 @@
 package io.github.xn32.json5k
 
+import io.github.xn32.json5k.deserialization.Json5ElementDecoder
 import io.github.xn32.json5k.deserialization.MainDecoder
 import io.github.xn32.json5k.format.Token
 import io.github.xn32.json5k.generation.FormatGenerator
@@ -9,13 +10,9 @@ import io.github.xn32.json5k.parsing.FormatParser
 import io.github.xn32.json5k.parsing.InjectableLookaheadParser
 import io.github.xn32.json5k.parsing.InputSource
 import io.github.xn32.json5k.parsing.StringInputSource
+import io.github.xn32.json5k.serialization.Json5ElementEncoder
 import io.github.xn32.json5k.serialization.MainEncoder
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.InheritableSerialInfo
-import kotlinx.serialization.SerialInfo
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.StringFormat
+import kotlinx.serialization.*
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -164,6 +161,22 @@ annotation class SerialComment(
      */
     val value: String
 )
+
+fun <T> Json5.encodeToJson5Element(serializer: SerializationStrategy<T>, value: T): Json5Element {
+    val encoder = Json5ElementEncoder(this)
+    serializer.serialize(encoder, value)
+    return encoder.get()
+}
+
+fun <T> Json5.decodeFromJson5Element(deserializer: DeserializationStrategy<T>, element: Json5Element): T {
+    val decoder = Json5ElementDecoder(this, element)
+    return deserializer.deserialize(decoder)
+}
+
+inline fun <reified T> Json5.encodeToJson5Element(value: T): Json5Element = encodeToJson5Element(serializer<T>(), value)
+
+inline fun <reified T> Json5.decodeFromJson5Element(element: Json5Element): T = decodeFromJson5Element(serializer<T>(), element)
+
 
 private val unsignedDescriptors = setOf(UByte.serializer(), UShort.serializer(), UInt.serializer(), ULong.serializer())
     .map(DeserializationStrategy<*>::descriptor)
