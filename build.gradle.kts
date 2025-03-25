@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.xn32"
-version = "0.5.0-SNAPSHOT"
+version = "0.5.2"
 
 repositories {
     mavenCentral()
@@ -112,13 +112,13 @@ publishing {
     }
 }
 
-signing {
-    isRequired = isReleaseVersion && gradle.taskGraph.hasTask("publish")
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications)
-}
+//signing {
+//    isRequired = isReleaseVersion && gradle.taskGraph.hasTask("publish")
+//    val signingKey: String? by project
+//    val signingPassword: String? by project
+//    useInMemoryPgpKeys(signingKey, signingPassword)
+//    sign(publishing.publications)
+//}
 
 tasks.withType<DokkaTask>().configureEach {
     val githubRepo = "https://github.com/xn32/json5k"

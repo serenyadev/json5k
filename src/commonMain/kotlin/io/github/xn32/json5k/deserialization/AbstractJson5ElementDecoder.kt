@@ -170,6 +170,10 @@ internal class Json5MapDecoder(
 
     override lateinit var element: Json5Element
 
+    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int {
+        return map.size
+    }
+
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
         return if (iterator.hasNext()) currentElementIndex
         else DECODE_DONE
@@ -195,6 +199,10 @@ internal class Json5ArrayDecoder(
     private var currentElementIndex: Int = 0
 
     override lateinit var element: Json5Element
+
+    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int {
+        return array.size
+    }
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
         return if (currentElementIndex < array.size) currentElementIndex
